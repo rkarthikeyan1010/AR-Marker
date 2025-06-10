@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Web AR - Butterfly Experience</title>
+    <title>Web AR - Dancing Character</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -80,7 +80,7 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
     <div class="instructions">
-        Point your camera at the marker to see the 3D butterfly
+        Point your camera at the marker to see the dancing character
     </div>
 
     <div class="marker-reference">
@@ -112,8 +112,8 @@
             <a-entity
                 position="0 0 0"
                 rotation="0 0 0"
-                scale="0.1 0.1 0.1"
-                gltf-model="./assets/models/butterfly_blendeer.glb"
+                scale="0.01 0.01 0.01"
+                fbx-model="./assets/models/Silly Dancing.fbx"
                 animation-mixer
                 class="clickable">
             </a-entity>
