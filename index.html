@@ -110,9 +110,9 @@
             emitevents="true">
             <!-- Load the 3D model -->
             <a-entity
-                position="0 0.5 0"
-                rotation="-90 0 0"
-                scale="0.5 0.5 0.5"
+                position="0 0 0"
+                rotation="0 0 0"
+                scale="0.1 0.1 0.1"
                 gltf-model="./assets/models/butterfly_blendeer.glb"
                 animation-mixer
                 class="clickable">
@@ -166,6 +166,18 @@
                 console.log('Marker lost!');
                 markerInfo.textContent = 'Waiting for marker...';
                 markerInfo.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            });
+
+            // Handle model loading
+            document.querySelector('a-entity').addEventListener('model-loaded', function() {
+                console.log('3D model loaded successfully');
+            });
+
+            // Handle model errors
+            document.querySelector('a-entity').addEventListener('model-error', function(error) {
+                console.error('Error loading 3D model:', error);
+                markerInfo.textContent = 'Error loading 3D model';
+                markerInfo.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
             });
 
             // Handle errors
