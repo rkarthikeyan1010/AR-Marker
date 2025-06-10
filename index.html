@@ -116,7 +116,7 @@
         <a-marker 
             type="pattern" 
             preset="hiro" 
-            url="./assets/markers/marker.jpg"
+            url="./src/assets/markers/marker.jpg"
             smooth="true"
             smoothCount="5"
             smoothTolerance="0.01"
@@ -128,8 +128,8 @@
                 position="0 0.5 0"
                 rotation="0 0 0"
                 scale="0.05 0.05 0.05"
-                fbx-model="./assets/models/Silly Dancing.fbx"
-                animation-mixer="loop: repeat"
+                fbx-model="./src/assets/models/Silly Dancing.fbx"
+                animation-mixer="loop: repeat; crossFadeDuration: 0.4"
                 class="clickable"
                 id="dancingModel">
             </a-entity>
@@ -225,6 +225,12 @@
                 setTimeout(() => {
                     debugInfo.style.display = 'none';
                 }, 3000);
+            });
+
+            // Log model loading progress
+            dancingModel.addEventListener('model-loading', function(evt) {
+                console.log('Model loading progress:', evt.detail);
+                debugInfo.innerHTML = 'Loading model...<br>Progress: ' + evt.detail;
             });
         });
     </script>
