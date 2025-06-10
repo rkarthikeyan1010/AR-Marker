@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web AR - Butterfly Experience</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        .ar-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .instructions {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <div class="instructions">
+        Point your camera at the marker to see the 3D butterfly
+    </div>
+
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+        <!-- Define the marker -->
+        <a-marker type="pattern" preset="hiro" url="./assets/markers/marker.jpg">
+            <!-- Load the 3D model -->
+            <a-entity
+                position="0 0 0"
+                rotation="0 0 0"
+                scale="1 1 1"
+                gltf-model="./assets/models/butterfly_blendeer.glb"
+                animation-mixer>
+            </a-entity>
+        </a-marker>
+        
+        <!-- Add a camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <button class="ar-button" onclick="startAR()">Start AR</button>
+
+    <script>
+        function startAR() {
+            // Request camera permission
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    console.log('Camera access granted');
+                })
+                .catch(function(error) {
+                    console.error('Camera access denied:', error);
+                    alert('Please allow camera access to use AR features');
+                });
+        }
+    </script>
+</body>
+</html> 
