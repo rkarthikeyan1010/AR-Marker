@@ -46,14 +46,21 @@
         Please allow camera access when prompted
     </div>
 
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;">
         <!-- Define the marker -->
-        <a-marker type="pattern" preset="hiro" url="./assets/markers/marker.jpg">
+        <a-marker 
+            type="pattern" 
+            preset="hiro" 
+            url="./assets/markers/marker.jpg"
+            smooth="true"
+            smoothCount="10"
+            smoothTolerance="0.01"
+            smoothThreshold="5">
             <!-- Load the 3D model -->
             <a-entity
-                position="0 0 0"
-                rotation="0 0 0"
-                scale="1 1 1"
+                position="0 0.5 0"
+                rotation="-90 0 0"
+                scale="0.5 0.5 0.5"
                 gltf-model="./assets/models/butterfly_blendeer.glb"
                 animation-mixer>
             </a-entity>
@@ -69,22 +76,37 @@
             const loadingMessage = document.getElementById('loadingMessage');
             
             // Request camera permission automatically
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(function(stream) {
-                    console.log('Camera access granted');
-                    // Hide loading message after a short delay
-                    setTimeout(() => {
-                        loadingMessage.style.display = 'none';
-                    }, 2000);
-                })
-                .catch(function(error) {
-                    console.error('Camera access denied:', error);
-                    loadingMessage.textContent = 'Error: Camera access denied. Please refresh and allow camera access.';
-                });
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 1280 },
+                    height: { ideal: 960 }
+                } 
+            })
+            .then(function(stream) {
+                console.log('Camera access granted');
+                // Hide loading message after a short delay
+                setTimeout(() => {
+                    loadingMessage.style.display = 'none';
+                }, 2000);
+            })
+            .catch(function(error) {
+                console.error('Camera access denied:', error);
+                loadingMessage.textContent = 'Error: Camera access denied. Please refresh and allow camera access.';
+            });
 
             // Listen for AR.js initialization
             document.querySelector('a-scene').addEventListener('arjs-nft-loaded', function() {
                 console.log('AR.js initialized successfully');
+            });
+
+            // Handle marker found
+            document.querySelector('a-marker').addEventListener('markerFound', function() {
+                console.log('Marker found!');
+            });
+
+            // Handle marker lost
+            document.querySelector('a-marker').addEventListener('markerLost', function() {
+                console.log('Marker lost!');
             });
 
             // Handle errors
