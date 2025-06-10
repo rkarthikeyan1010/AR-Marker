@@ -76,6 +76,19 @@
             font-size: 12px;
             white-space: nowrap;
         }
+        #debugInfo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            z-index: 1002;
+            display: none;
+        }
     </style>
 </head>
 <body style="margin: 0; overflow: hidden;">
@@ -96,6 +109,8 @@
         Waiting for marker...
     </div>
 
+    <div id="debugInfo"></div>
+
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;">
         <!-- Define the marker -->
         <a-marker 
@@ -110,12 +125,13 @@
             emitevents="true">
             <!-- Load the 3D model -->
             <a-entity
-                position="0 0 0"
+                position="0 0.5 0"
                 rotation="0 0 0"
-                scale="0.01 0.01 0.01"
+                scale="0.05 0.05 0.05"
                 fbx-model="./assets/models/Silly Dancing.fbx"
-                animation-mixer
-                class="clickable">
+                animation-mixer="loop: repeat"
+                class="clickable"
+                id="dancingModel">
             </a-entity>
         </a-marker>
         
@@ -128,6 +144,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const loadingMessage = document.getElementById('loadingMessage');
             const markerInfo = document.getElementById('markerInfo');
+            const debugInfo = document.getElementById('debugInfo');
+            const dancingModel = document.getElementById('dancingModel');
             
             // Request camera permission automatically
             navigator.mediaDevices.getUserMedia({ 
@@ -159,6 +177,10 @@
                 console.log('Marker found!');
                 markerInfo.textContent = 'Marker detected!';
                 markerInfo.style.backgroundColor = 'rgba(0, 255, 0, 0.7)';
+                
+                // Show debug info
+                debugInfo.style.display = 'block';
+                debugInfo.innerHTML = 'Marker detected!<br>Loading model...';
             });
 
             // Handle marker lost
@@ -166,24 +188,43 @@
                 console.log('Marker lost!');
                 markerInfo.textContent = 'Waiting for marker...';
                 markerInfo.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                debugInfo.style.display = 'none';
             });
 
             // Handle model loading
-            document.querySelector('a-entity').addEventListener('model-loaded', function() {
+            dancingModel.addEventListener('model-loaded', function() {
                 console.log('3D model loaded successfully');
+                debugInfo.innerHTML = 'Model loaded successfully!<br>You should see the dancing character now.';
+                setTimeout(() => {
+                    debugInfo.style.display = 'none';
+                }, 3000);
             });
 
             // Handle model errors
-            document.querySelector('a-entity').addEventListener('model-error', function(error) {
+            dancingModel.addEventListener('model-error', function(error) {
                 console.error('Error loading 3D model:', error);
                 markerInfo.textContent = 'Error loading 3D model';
                 markerInfo.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+                debugInfo.innerHTML = 'Error loading model:<br>' + error.detail;
             });
 
             // Handle errors
             document.querySelector('a-scene').addEventListener('camera-error', function(error) {
                 console.error('Camera error:', error);
                 loadingMessage.textContent = 'Error accessing camera. Please refresh the page.';
+            });
+
+            // Add click handler for debugging
+            dancingModel.addEventListener('click', function() {
+                console.log('Model clicked');
+                debugInfo.style.display = 'block';
+                debugInfo.innerHTML = 'Model clicked!<br>Position: ' + 
+                    dancingModel.getAttribute('position').x + ', ' +
+                    dancingModel.getAttribute('position').y + ', ' +
+                    dancingModel.getAttribute('position').z;
+                setTimeout(() => {
+                    debugInfo.style.display = 'none';
+                }, 3000);
             });
         });
     </script>
