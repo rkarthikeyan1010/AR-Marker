@@ -111,18 +111,19 @@
 
     <div id="debugInfo"></div>
 
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true; detectionMode: mono; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;">
         <!-- Define the marker -->
         <a-marker 
             type="pattern" 
             preset="custom"
             url="./src/assets/markers/marker.jpeg"
             smooth="true"
-            smoothCount="5"
-            smoothTolerance="0.01"
-            smoothThreshold="2"
+            smoothCount="3"
+            smoothTolerance="0.05"
+            smoothThreshold="1"
             raycaster="objects: .clickable"
-            emitevents="true">
+            emitevents="true"
+            id="marker">
             <!-- Load the 3D model -->
             <a-entity
                 position="0 0.5 0"
@@ -146,6 +147,7 @@
             const markerInfo = document.getElementById('markerInfo');
             const debugInfo = document.getElementById('debugInfo');
             const model3D = document.getElementById('model3D');
+            const marker = document.getElementById('marker');
             
             // Request camera permission automatically
             navigator.mediaDevices.getUserMedia({ 
@@ -173,7 +175,7 @@
             });
 
             // Handle marker found
-            document.querySelector('a-marker').addEventListener('markerFound', function() {
+            marker.addEventListener('markerFound', function() {
                 console.log('Marker found!');
                 markerInfo.textContent = 'Marker detected!';
                 markerInfo.style.backgroundColor = 'rgba(0, 255, 0, 0.7)';
@@ -184,7 +186,7 @@
             });
 
             // Handle marker lost
-            document.querySelector('a-marker').addEventListener('markerLost', function() {
+            marker.addEventListener('markerLost', function() {
                 console.log('Marker lost!');
                 markerInfo.textContent = 'Waiting for marker...';
                 markerInfo.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
