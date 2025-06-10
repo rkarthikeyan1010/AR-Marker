@@ -10,19 +10,6 @@
             margin: 0;
             overflow: hidden;
         }
-        .ar-button {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1000;
-        }
         .instructions {
             position: fixed;
             top: 20px;
@@ -35,9 +22,6 @@
             text-align: center;
             z-index: 1000;
         }
-        #arScene {
-            display: none;
-        }
         .loading {
             position: fixed;
             top: 50%;
@@ -49,7 +33,6 @@
             border-radius: 10px;
             text-align: center;
             z-index: 1001;
-            display: none;
         }
     </style>
 </head>
@@ -63,7 +46,7 @@
         Please allow camera access when prompted
     </div>
 
-    <a-scene id="arScene" embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
         <!-- Define the marker -->
         <a-marker type="pattern" preset="hiro" url="./assets/markers/marker.jpg">
             <!-- Load the 3D model -->
@@ -80,45 +63,34 @@
         <a-entity camera></a-entity>
     </a-scene>
 
-    <button class="ar-button" onclick="startAR()">Start AR</button>
-
     <script>
-        function startAR() {
+        // Handle AR.js initialization
+        document.addEventListener('DOMContentLoaded', function() {
             const loadingMessage = document.getElementById('loadingMessage');
-            const arScene = document.getElementById('arScene');
             
-            // Show loading message
-            loadingMessage.style.display = 'block';
-            
-            // Request camera permission
+            // Request camera permission automatically
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(function(stream) {
                     console.log('Camera access granted');
-                    // Hide loading message
-                    loadingMessage.style.display = 'none';
-                    // Show AR scene
-                    arScene.style.display = 'block';
+                    // Hide loading message after a short delay
+                    setTimeout(() => {
+                        loadingMessage.style.display = 'none';
+                    }, 2000);
                 })
                 .catch(function(error) {
                     console.error('Camera access denied:', error);
-                    loadingMessage.style.display = 'none';
-                    alert('Please allow camera access to use AR features');
+                    loadingMessage.textContent = 'Error: Camera access denied. Please refresh and allow camera access.';
                 });
-        }
 
-        // Handle AR.js initialization
-        document.addEventListener('DOMContentLoaded', function() {
-            const arScene = document.getElementById('arScene');
-            
             // Listen for AR.js initialization
-            arScene.addEventListener('arjs-nft-loaded', function() {
+            document.querySelector('a-scene').addEventListener('arjs-nft-loaded', function() {
                 console.log('AR.js initialized successfully');
             });
 
             // Handle errors
-            arScene.addEventListener('camera-error', function(error) {
+            document.querySelector('a-scene').addEventListener('camera-error', function(error) {
                 console.error('Camera error:', error);
-                alert('Error accessing camera. Please make sure your camera is working and try again.');
+                loadingMessage.textContent = 'Error accessing camera. Please refresh the page.';
             });
         });
     </script>
